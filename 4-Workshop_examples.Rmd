@@ -1,22 +1,25 @@
 ---
-title: "Workshop Examples"  
+title: "Workshop Examples"
 author: "Melissa Monk"
 date: ''
 output:
   pdf_document:
-    fig_caption: yes    
+    fig_caption: yes
     includes:
       in_header: header.tex
     keep_tex: yes
     number_sections: yes
     toc: yes
     toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
 documentclass: article
 fontsize: 12pt
 geometry: margin=1in
+link-citations: yes
 csl: CJFAS.csl
 bibliography: BibFile.bib
-link-citations: yes
 ---
 
 ```{r global_options, include=FALSE}
@@ -26,7 +29,7 @@ link-citations: yes
     # knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
       library(xtable)
-    # options(xtable.comment = FALSE)  # turns off xtable comments
+    options(xtable.comment = FALSE)  # turns off xtable comments
 ```
 
 Change some of the YAML settings to see what happens.
@@ -39,26 +42,35 @@ On the right side of the R code chunk are additional options, Settings, a down a
 
 # Epmhasis (R markdown and LaTeX)
 
+*Sebastes*
+_Sebastes_ 
+\emph{Sebastes}
 
-
+**Sebastes**
+__Sebastes__ 
+\textbf{Sebastes}
 
 # Headers
 
-
-
+# Subhead 1
+## Subhead 2
+### Subhead 3
+#### Subhead 4
 
 # Commenting
 
-
-
+<!-- comments -->
+<!-- more comments
+                   -->
 
 # Links
 
+[Github](http://www.github.com)
 
-
+\href{http://www.github.com}{Git}
 
 # Lists
-<!--
+
 R Markdown are finicky with spacing...
 * Item 1
 * Item 2
@@ -71,46 +83,56 @@ R Markdown are finicky with spacing...
     + Item 2a
     + Item 2b
 
--->
 
-<!--
 Bulleted list
 \begin{itemize}[noitemsep,nolistsep,topsep=0pt]
+
+\item List 1
 
 \item \href{https://git-scm.com/book/en/v2/Getting-Started-Installing-Git}{Git}
 
 \item \href{https://cran.r-project.org/bin/windows/base/}{R}
 
 \end{itemize}
--->
 
-
-<!--
 Numbered list
 \begin{enumerate}[noitemsep,nolistsep,topsep=0pt]
+\item Item here
 
 \item \href{https://git-scm.com/book/en/v2/Getting-Started-Installing-Git}{Git}
 
 \item \href{https://cran.r-project.org/bin/windows/base/}{R} 
 
 \end{enumerate}
--->
+
+Nested list
+\begin{enumerate}[itemsep=3pt,nolistsep,topsep=12pt]
+\item Item here
+   \begin{itemize}[itemsep=6pt,nolistsep,topsep=0pt]
+   \item Item here
+   \item Item here
+   \end{itemize}
+\item Item here
+\end{enumerate}
 
 # References and Citations
 
 We can reference a document section, see Lists in Section \ref{lists}.
 
-Citations: [@Love2002]
+Citations: [@Love2002;@Lo1992]
 
+Love and colleages [-@Love2002]
 
 #Figure from a file
 You can use any file extension, including PDFs
 
 ![Here's my caption \label{fig:fig_example}](RMarkdownFLow.png)
 
+![Here's my caption \label{fig:fig_example2}](./Figures/RMarkdownFLow1.png)
+
 Figures are referenced using LaTeX syntax \ref{fig:fig_example}.
 
-Put a space between the ] and ( above. Knit the document.  
+Put a space between the ] and ( above. Knit the document. It doesn't like space.
 
 
 Now try adding your own picture to the directory, adding it in here, and referencing it.
@@ -121,56 +143,55 @@ Now try adding your own picture to the directory, adding it in here, and referen
 
 You can embed an R code chunk like this:
 
-```{r cars, echo=FALSE, include=F}
+```{r cars,echo=FALSE}
 summary(cars)
 ```
 
 
 Play witht the r code chunk options, echo=TRUE, include=FALSE, results='asis'
 
-
-
-
+\FloatBarrier
 
 # Figure from R code chunk
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE, include=FALSE, fig.cap="Figure of something  at $40^\\circ 10^\\prime$. \\label{fig:pressure}"}
+```{r pressure,echo=FALSE, fig.cap="Figure of something  at $40^\\circ 10^\\prime$. \\label{fig:pressure}"}
 plot(pressure)
 ```
 
+Inline math mode in LaTeX is defined by two dollar signs, $40^\circ 10^\prime$
+
 Note, you need extra \\s when using LaTeX syntax within an R code chunk, or when inserting a backslash in R markdown.  The same goes with percent signs and any other LaTeX reserved symbol.
 
-
-
-<!--
 We can now reference Figure \ref{fig:pressure}.  Note where this text ends up.
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
--->
+\FloatBarrier
 
+<!-- \FloatBarrier defines where figures are placed -->
 
 #Tables
 
-```{r, results='asis', echo=FALSE, include=FALSE}
+```{r, results='asis',echo=FALSE}
 #, results='asis', echo=FALSE, include=FALSE, message=FALSE, warning=FALSE
 Tab = read.csv('Table_example.csv')
 
 Tab_example = xtable(Tab, 
                    caption=c('This is where you write your caption'),
-                   label = 'tab:Table_example')
+                   label = 'tab:Table_example',
+                   digits = 2)
 
-print(Tab_example, include.rownames = FALSE, caption.placement = 'top')
+align(Tab_example) = 'lccrccrclrcc'
 
+print(Tab_example, include.rownames = FALSE, caption.placement = 'top', scalebox=0.7)
+
+# can use vector to specify different number of digits for each column
+# add alignment, need l r or c for each column with first for row cols. Run (arrow) to see number of cols
 # print option to try, scalebox = 0.7
-# add alignment
-
 
 ```
-
-
 
 Try changing the R chunk options above. 
 
@@ -185,19 +206,32 @@ Either create a .csv file or copy one into the repo folder on your computer.
 
 Now, create a table!
 
+```{r, results='asis',echo=FALSE}
+Practice = read.csv('AntillanaArtCatch.csv')
+#Practice_example = data.frame(YEAR=as.factor(Practice$YEAR),
+#                      AREA=as.factor(Practice$AREA),
+#                      CAPTURA=as.numeric(Practice$CAPTURA))
 
+#Practice_example = aggregate(Practice_example,by=list(Practice$YEAR,Practice$AREA),FUN=mean,na.rm=TRUE)
 
+Practice_example = xtable(Practice, 
+                   caption=c('This is where you write your caption'),
+                   label = 'tab:Practice_example',)
+
+align(Practice_example) = 'llcccr'
+
+print(Practice_example, include.rownames = FALSE, caption.placement = 'top', scalebox=1)
+
+```
 
 #Math mode
- <!--
+ 
 You can use LaTeX math mode both inline and for inserting equations. It's handy for using inline math mode for management measure and lat/long.
 
 Inline looks like this:  $SPR_{40\%}$  
-*Note the % sign has a \ when used in math mode, but not in R markdown text.
+*Note the % sign has a \\ when used in math mode, but not in R markdown text.
 
 To get degrees and minutes type: $40^\circ 10^\prime$   
-
--->
 
 #References
 
